@@ -28,6 +28,9 @@ class DelegatingController(Controller):
     def toggle(self):
         return self.get_controler().toggle()
 
+    def next(self):
+        return self.get_controler().next()
+
 
 class CmusController(Controller):
     name = 'cmus'
@@ -37,6 +40,12 @@ class CmusController(Controller):
 
     def is_active(self):
         return 'playing' in self.__cmus_status()[0]
+
+    def toggle(self):
+        check_output(['cmus-remote', '-u'])
+
+    def next(self):
+        check_output(['cmus-remote', '-n'])
 
     def __cmus_status(self):
         output = check_output(['cmus-remote', '-Q'])

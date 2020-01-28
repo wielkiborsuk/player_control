@@ -5,6 +5,7 @@ def main():
     controller = DelegatingController()
     # controller.focus('spotify')
     print(controller.status())
+    controller.next()
 
 
 if __name__ == "__main__":
