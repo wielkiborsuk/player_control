@@ -3,9 +3,10 @@ from control.control import DelegatingController
 
 def main():
     controller = DelegatingController()
-    # controller.focus('spotify')
-    print(controller.status())
-    controller.next()
+    controller.focus('cmus')
+    # print(controller.status())
+    # controller.next()
+    controller.toggle()
 
 
 if __name__ == "__main__":
