@@ -9,6 +9,8 @@ class Controller(object):
 
 
 class DelegatingController(Controller):
+    tmp_file = '/tmp/player_control_current'
+
     def __init__(self):
         self.current = None
         self.controllers = [
@@ -16,11 +18,22 @@ class DelegatingController(Controller):
             SpotifyController(),
             BrowserController()
         ]
+        self.focus(self.__load_focus())
+        self.scan()
 
     def focus(self, name):
         for controller in self.controllers:
             if controller.name == name:
                 self.current = controller
+                self.__save_focus(name)
+
+    def scan(self):
+        for controller in self.controllers:
+            try:
+                if controller.is_active():
+                    self.focus(controller.name)
+            except Exception:
+                print('controller {} not responding'.format(controller.name))
 
     def get_controler(self):
         return self.current or self.controllers[0]
@@ -33,6 +46,17 @@ class DelegatingController(Controller):
 
     def next(self):
         return self.get_controler().next()
+
+    def __save_focus(self, name):
+        with open(self.tmp_file, 'w') as state:
+            state.write(name)
+
+    def __load_focus(self):
+        try:
+            with open(self.tmp_file, 'r') as state:
+                return state.read()
+        except Exception:
+            return None
 
 
 class CmusController(Controller):
