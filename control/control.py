@@ -1,4 +1,4 @@
-from subprocess import check_output
+from subprocess import check_output, DEVNULL
 import dbus
 import re
 
@@ -11,7 +11,8 @@ class Controller(object):
 class DelegatingController(Controller):
     tmp_file = '/tmp/player_control_current'
 
-    def __init__(self):
+    def __init__(self, debug=False):
+        self.__debug = debug
         self.current = None
         self.controllers = [
             CmusController(),
@@ -33,7 +34,9 @@ class DelegatingController(Controller):
                 if controller.is_active():
                     self.focus(controller.name)
             except Exception:
-                print('controller {} not responding'.format(controller.name))
+                if self.__debug:
+                    print('controller {} not responding'
+                          .format(controller.name))
 
     def get_controler(self):
         return self.current or self.controllers[0]
@@ -63,16 +66,20 @@ class CmusController(Controller):
     name = 'cmus'
 
     def status(self):
-        status = self.__cmus_status()
-        file_name = self.__parse_file(self.__find_in_status(status, 'file'))
-        duration = self.__parse_number(
-            self.__find_in_status(status, 'duration'))
-        position = self.__parse_number(
-            self.__find_in_status(status, 'position'))
-        status_message = '{} {}/{}'.format(file_name,
-                                           self.format_time(position),
-                                           self.format_time(duration))
-        return status_message
+        try:
+            status = self.__cmus_status()
+            file_name = self.__parse_file(
+                self.__find_in_status(status, 'file'))
+            duration = self.__parse_number(
+                self.__find_in_status(status, 'duration'))
+            position = self.__parse_number(
+                self.__find_in_status(status, 'position'))
+            status_message = '{} {}/{}'.format(file_name,
+                                               self.format_time(position),
+                                               self.format_time(duration))
+            return status_message
+        except Exception:
+            return ''
 
     def is_active(self):
         return 'playing' in self.__cmus_status()[0]
@@ -93,7 +100,7 @@ class CmusController(Controller):
         return next((line for line in status if line.startswith(name)), None)
 
     def __cmus_status(self):
-        output = check_output(['cmus-remote', '-Q'])
+        output = check_output(['cmus-remote', '-Q'], stderr=DEVNULL)
         output = output.decode('utf-8').split('\n')
         return output
 

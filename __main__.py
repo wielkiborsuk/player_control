@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import argparse
 from control.control import DelegatingController
 
@@ -8,6 +9,8 @@ def configure_argparser():
                         help='command for the player to execute')
     parser.add_argument('--target', type=str, dest='target',
                         help='target player name to override current')
+    parser.add_argument('--debug', type=bool, dest='debug',
+                        default=False, help='include additional debug info')
 
     return parser
 
@@ -24,7 +27,7 @@ def execute(controller, command):
 def main():
     parser = configure_argparser()
     args = parser.parse_args()
-    controller = DelegatingController()
+    controller = DelegatingController(debug=args.debug)
 
     if args.target:
         controller.focus(args.target)
