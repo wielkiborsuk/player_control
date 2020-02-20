@@ -85,9 +85,11 @@ class CmusController(Controller):
         return 'playing' in self.__cmus_status()[0]
 
     def toggle(self):
+        self.__ensure_cmus_present()
         check_output(['cmus-remote', '-u'])
 
     def next(self):
+        self.__ensure_cmus_present()
         check_output(['cmus-remote', '-n'])
 
     def __parse_file(self, file_line):
@@ -103,6 +105,12 @@ class CmusController(Controller):
         output = check_output(['cmus-remote', '-Q'], stderr=DEVNULL)
         output = output.decode('utf-8').split('\n')
         return output
+
+    def __ensure_cmus_present(self):
+        try:
+            check_output(['pgrep', 'cmus'])
+        except Exception:
+            check_output(['playback_toggle'])
 
 
 class MprisController(Controller):
