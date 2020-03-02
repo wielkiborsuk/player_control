@@ -7,6 +7,9 @@ class Controller(object):
     def format_time(self, seconds):
         return '{:02d}:{:02d}'.format(seconds // 60, seconds % 60)
 
+    def json_escape(self, text):
+        return text.replace('"', '\\"')
+
 
 class DelegatingController(Controller):
     tmp_file = '/tmp/player_control_current'
@@ -42,7 +45,7 @@ class DelegatingController(Controller):
         return self.current or self.controllers[0]
 
     def status(self):
-        return self.get_controler().status()
+        return self.json_escape(self.get_controler().status())
 
     def toggle(self):
         return self.get_controler().toggle()
