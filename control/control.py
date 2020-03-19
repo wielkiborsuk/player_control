@@ -96,7 +96,7 @@ class CmusController(Controller):
         check_output(['cmus-remote', '-n'])
 
     def __parse_file(self, file_line):
-        return file_line.split()[1].split('/')[-1]
+        return file_line.split('/')[-1]
 
     def __parse_number(self, time_line):
         return int(time_line.split()[1])
