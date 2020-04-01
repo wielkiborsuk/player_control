@@ -45,7 +45,11 @@ class DelegatingController(Controller):
         return self.current or self.controllers[0]
 
     def status(self):
-        return self.json_escape(self.get_controler().status())
+        try:
+            return self.json_escape(self.get_controler().status())
+        except Exception:
+            self.__save_focus(None)
+            return ''
 
     def toggle(self):
         return self.get_controler().toggle()
@@ -143,6 +147,8 @@ class MprisController(Controller):
             title,
             self.format_time(self.mpris_position()),
             self.format_time(duration//1000000))
+        if not title or not status_message:
+            raise RuntimeError("mpris service didn't respond")
         return status_message
 
     def mpris_metadata(self):
