@@ -20,7 +20,8 @@ class DelegatingController(Controller):
         self.controllers = [
             CmusController(),
             SpotifyController(),
-            BrowserController()
+            BrowserController(),
+            FirefoxController()
         ]
         self.focus(self.__load_focus())
         self.scan()
@@ -156,8 +157,11 @@ class MprisController(Controller):
                                             'Metadata')
 
     def mpris_position(self):
-        return self.__player_properties.Get(self.__dbus_player,
-                                            'Position')
+        try:
+            return self.__player_properties.Get(self.__dbus_player,
+                                                'Position')
+        except:
+            return 0
 
     def __mpris_playback_status(self):
         return self.__player_properties.Get(self.__dbus_player,
@@ -199,6 +203,23 @@ class BrowserController(MprisController):
     def __init__(self):
         instances = self.find_instance(self.name)
         dbus_name = self.__select_instance_by_cmd(instances, 'chromium')
+        super().__init__(dbus_name)
+
+    def __select_instance_by_cmd(self, instances, cmd_part):
+        for instance in instances:
+            pid = re.match('.+instance(\\d+)', instance).group(1)
+            cmd = check_output(['ps', '-o', 'cmd=', pid]).decode('utf-8')
+            if cmd_part in cmd:
+                return instance
+        return None
+
+
+class FirefoxController(MprisController):
+    name = 'firefox'
+
+    def __init__(self):
+        instances = self.find_instance(self.name)
+        dbus_name = self.__select_instance_by_cmd(instances, 'firefox')
         super().__init__(dbus_name)
 
     def __select_instance_by_cmd(self, instances, cmd_part):
