@@ -185,7 +185,7 @@ class MprisController(Controller):
     def find_instance(self, query):
         obj = self.__bus.get_object("org.freedesktop.DBus",
                                     "/org/freedesktop/DBus")
-        result = [str(name) for name in obj.ListNames() if query in name]
+        result = [str(name) for name in obj.ListNames() if query in name and 'mpris' in name]
         return result
 
 
