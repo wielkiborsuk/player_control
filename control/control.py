@@ -228,6 +228,7 @@ class FirefoxController(MprisController):
         if len(instances) == 1:
             return instances[0]
         for instance in instances:
+            return instance
             pid = re.match('.+instance([_\\d]+)', instance).group(1)
             cmd = check_output(['ps', '-o', 'cmd=', pid]).decode('utf-8')
             if cmd_part in cmd:
