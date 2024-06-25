@@ -10,6 +10,9 @@ class Controller(object):
     def json_escape(self, text):
         return text.replace('"', '\\"')
 
+    def is_valid(self) -> bool:
+        return True
+
 
 class DelegatingController(Controller):
     tmp_file = '/tmp/player_control_current'
@@ -17,12 +20,12 @@ class DelegatingController(Controller):
     def __init__(self, debug=False):
         self.__debug = debug
         self.current = None
-        self.controllers = [
+        self.controllers = [ c for c in [
             CmusController(),
             SpotifyController(),
             BrowserController(),
             FirefoxController()
-        ]
+        ] if c.is_valid() ]
         self.focus(self.__load_focus())
         self.scan()
 
@@ -139,6 +142,9 @@ class MprisController(Controller):
     def is_active(self):
         status = self.__mpris_playback_status()
         return status == 'Playing'
+
+    def is_valid(self) -> bool:
+        return bool(self.__dbus_name)
 
     def status(self):
         status = self.mpris_metadata()
