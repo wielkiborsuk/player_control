@@ -152,7 +152,7 @@ class MprisController(Controller):
         duration = int(status.get('mpris:length', '0'))
         status_message = '{} {}/{}'.format(
             title,
-            self.format_time(self.mpris_position()),
+            self.format_time(self.mpris_position()//1000000),
             self.format_time(duration//1000000))
         if not title or not status_message:
             raise RuntimeError("mpris service didn't respond")
