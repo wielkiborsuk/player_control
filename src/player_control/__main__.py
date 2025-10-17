@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import argparse
-from control.control import DelegatingController
+from player_control.controllers import DelegatingController
 
 
 def configure_argparser():
