@@ -1,6 +1,12 @@
 # Player Control
 
-TODO: Add project description
+
+This project is a command-line tool for controlling various music players,
+including cmus, mocp, Spotify, and web browsers (Chromium, Firefox).
+It provides a unified interface for controlling these players, allowing you to
+play, pause, and skip tracks without having to switch between different
+applications.
+
 
 ## Installation
 

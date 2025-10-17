@@ -1,3 +1,4 @@
+import subprocess
 from subprocess import check_output, DEVNULL
 from .base import Controller
 
@@ -24,7 +25,7 @@ class MocpController(Controller):
                 self.format_time(total_time)
             )
             return status_message
-        except Exception:
+        except (subprocess.CalledProcessError, AttributeError):
             return ''
 
     def is_active(self):
@@ -32,14 +33,14 @@ class MocpController(Controller):
             status_output = self.__mocp_status()
             state = self.__find_in_status(status_output, 'State')
             return state == 'PLAY'
-        except Exception:
+        except (subprocess.CalledProcessError, AttributeError):
             return False
 
     def is_valid(self) -> bool:
         try:
             check_output(['pgrep', 'mocp'], stderr=DEVNULL)
             return True
-        except Exception:
+        except subprocess.CalledProcessError:
             return False
 
     def toggle(self):

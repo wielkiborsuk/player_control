@@ -52,28 +52,39 @@ class DelegatingController(Controller):
                 return
 
     def scan(self):
-        # 1. Check for active player
+        if self._find_active_player():
+            return
+        if self._focus_on_last_used_player():
+            return
+        if self._focus_on_default_player():
+            return
+        self._fallback_to_first_available()
+
+    def _find_active_player(self):
         for controller in self.controllers:
             try:
                 if controller.is_active():
                     self.focus(controller.name)
-                    return
-            except Exception:
+                    return True
+            except Exception as e:
                 if self.__debug:
-                    print(f'controller {controller.name} not responding')
+                    print(f'controller {controller.name} not responding: {e}')
+        return False
 
-        # 2. Check for last used player
+    def _focus_on_last_used_player(self):
         last_used_name = self.__load_focus()
         if last_used_name:
             self.focus(last_used_name)
-            return
+            return True
+        return False
 
-        # 3. Check for default player in config
+    def _focus_on_default_player(self):
         if self.default_controller_name:
             self.focus(self.default_controller_name)
-            return
+            return True
+        return False
 
-        # 4. Fallback to first available player
+    def _fallback_to_first_available(self):
         if self.controllers:
             self.current = self.controllers[0]
         else:
@@ -83,7 +94,7 @@ class DelegatingController(Controller):
         if not self.current: return ''
         try:
             return self.json_escape(self.current.status())
-        except Exception:
+        except RuntimeError:
             self.__save_focus(None)
             return ''
 
