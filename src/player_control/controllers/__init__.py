@@ -5,10 +5,10 @@ from .spotify import SpotifyController
 from .browser import ChromiumController, FirefoxController
 
 __all__ = [
-    'Controller',
-    'DelegatingController',
-    'CmusController',
-    'SpotifyController',
-    'ChromiumController',
-    'FirefoxController',
+    "Controller",
+    "DelegatingController",
+    "CmusController",
+    "SpotifyController",
+    "ChromiumController",
+    "FirefoxController",
 ]

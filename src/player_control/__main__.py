@@ -4,13 +4,21 @@ from player_control.controllers import DelegatingController
 
 
 def configure_argparser():
-    parser = argparse.ArgumentParser(description='Player cli controller')
-    parser.add_argument('command', type=str,
-                        help='command for the player to execute')
-    parser.add_argument('--target', type=str, dest='target',
-                        help='target player name to override current')
-    parser.add_argument('--debug', type=bool, dest='debug',
-                        default=False, help='include additional debug info')
+    parser = argparse.ArgumentParser(description="Player cli controller")
+    parser.add_argument("command", type=str, help="command for the player to execute")
+    parser.add_argument(
+        "--target",
+        type=str,
+        dest="target",
+        help="target player name to override current",
+    )
+    parser.add_argument(
+        "--debug",
+        type=bool,
+        dest="debug",
+        default=False,
+        help="include additional debug info",
+    )
 
     return parser
 
@@ -21,7 +29,7 @@ def execute(controller, command):
         if result:
             print(result)
     else:
-        print('unknown command')
+        print("unknown command")
 
 
 def main():

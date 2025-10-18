@@ -16,4 +16,9 @@ player_control = "player_control.__main__:main"
 [project.optional-dependencies]
 dev = [
     "pytest",
+    "ruff",
 ]
+
+[tool.ruff]
+line-length = 88
+target-version = "py38"
