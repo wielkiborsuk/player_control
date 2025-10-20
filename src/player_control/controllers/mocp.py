@@ -1,3 +1,4 @@
+import time
 import subprocess
 from subprocess import check_output, DEVNULL
 from .base import Controller
@@ -39,17 +40,12 @@ class MocpController(Controller):
         except (subprocess.CalledProcessError, AttributeError):
             return False
 
-    def is_valid(self) -> bool:
-        try:
-            check_output(["pgrep", "mocp"], stderr=DEVNULL)
-            return True
-        except subprocess.CalledProcessError:
-            return False
-
     def toggle(self):
+        self.__ensure_mocp_present()
         check_output(["mocp", "-G"])
 
     def next(self):
+        self.__ensure_mocp_present()
         check_output(["mocp", "-f"])
 
     def __mocp_status(self):
@@ -66,3 +62,13 @@ class MocpController(Controller):
         if time_line:
             return int(time_line)
         return 0
+
+    def __ensure_mocp_present(self):
+        try:
+            check_output(["pgrep", "mocp"], stderr=DEVNULL)
+        except subprocess.CalledProcessError:
+            # Start mocp server
+            check_output(["mocp", "-S"], stderr=DEVNULL)
+            # Wait a bit for the server to start
+            time.sleep(0.5)
+            check_output(["mocp", "-p"], stderr=DEVNULL)

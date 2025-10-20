@@ -43,6 +43,39 @@ Once installed, you can run the application from your terminal:
 player_control
 ```
 
+### Delegating Controller
+
+The delegating controller automatically selects and manages different player controllers based on their availability. It supports:
+
+- Mocp (Music On Console Player)
+- Cmus (Console Music Player)
+
+#### Configuration
+
+Create a configuration file at `~/.config/player_control/config.ini` with:
+
+```
+[general]
+default_controller = mocp
+```
+
+#### Usage Examples
+
+```bash
+# Toggle playback
+player_control toggle
+
+# Next track
+player_control next
+
+# Status info
+player_control status
+
+# Focus specific controller
+player_control focus mocp
+```
+
+
 ## Development
 
 To run the tests:
